@@ -26,8 +26,10 @@
   },
   "dependencies": {
     "@rslint/core": "^0.1.12",
+    "@types/crypto-js": "^4.2.2",
     "@vueuse/core": "^13.8.0",
     "axios": "^1.11.0",
+    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.15",
     "echarts": "^6.0.0",
     "lodash-es": "^4.17.21",

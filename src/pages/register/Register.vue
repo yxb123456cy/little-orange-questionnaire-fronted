@@ -1,52 +1,23 @@
 <script setup lang="ts">
+import type { User } from '../../types'
 import { IconEmail, IconLock, IconUser } from '@arco-design/web-vue/es/icon'
 import Message from '@arco-design/web-vue/es/message'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
+import { useUserStore } from '../../store/modules/user/useUserStore'
+import { EncryptPasswordMD5 } from '../../utils/modules/crypto'
+import { GetCurrentTime } from '../../utils/modules/date'
+import { GetRandom7DigitNumber } from '../../utils/modules/number'
+import usePageState from './hooks/usePageState'
 
-const loading = ref(false)
-
-const form = reactive({
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  agree: false,
-})
-
-const rules = {
-  username: [
-    { required: true, message: '请输入用户名' },
-    { minLength: 2, message: '用户名长度不能少于2位' },
-    { maxLength: 20, message: '用户名长度不能超过20位' },
-  ],
-  email: [
-    { required: true, message: '请输入邮箱地址' },
-    { type: 'email', message: '请输入正确的邮箱格式' },
-  ],
-  password: [
-    { required: true, message: '请输入密码' },
-    { minLength: 6, message: '密码长度不能少于6位' },
-  ],
-  confirmPassword: [
-    { required: true, message: '请确认密码' },
-    {
-      // eslint-disable-next-line ts/no-unsafe-function-type
-      validator: (value: string, callback: Function) => {
-        if (value !== form.password) {
-          callback('两次输入的密码不一致')
-        }
-        else {
-          callback()
-        }
-      },
-    },
-  ],
-}
-
+const { loading, form, rules } = usePageState()
+const registerFormRef = ref()
+const userStore = useUserStore()
 // 处理注册;
 async function handleSubmit({ errors }: any) {
-  if (errors)
+  if (errors) {
+    console.error('注册表单error:', errors)
     return
+  }
 
   if (!form.agree) {
     Message.warning('请先同意用户协议和隐私政策')
@@ -57,7 +28,31 @@ async function handleSubmit({ errors }: any) {
   try {
     // TODO: 实现注册逻辑
     console.warn('注册信息:', form)
-    Message.success('注册成功')
+    const req: User = {
+      id: GetRandom7DigitNumber(),
+      username: form.username,
+      email: form.email,
+      password_hash: EncryptPasswordMD5(form.password),
+      role: 'user',
+      status: 1,
+      created_at: GetCurrentTime(),
+      updated_at: GetCurrentTime(),
+    }
+    // 在此处进行store调用;
+    const result = userStore.registerUser(req)
+    console.warn('注册结果:', result)
+    if (result) {
+      Message.success('注册成功')
+    }
+    else {
+      registerFormRef.value?.setFields({
+        email: {
+          status: 'error',
+          message: '该邮箱已被注册',
+        },
+      })
+      console.error('注册失败')
+    }
   }
   catch (error) {
     console.error(error)
@@ -87,7 +82,10 @@ async function handleSubmit({ errors }: any) {
       </div>
 
       <!-- 注册表单 -->
-      <a-form :model="form" :rules="rules" layout="vertical" class="register-form" @submit="handleSubmit">
+      <a-form
+        ref="registerFormRef" :model="form" :rules="rules" layout="vertical" class="register-form"
+        @submit="handleSubmit"
+      >
         <a-form-item field="username" label="用户名">
           <a-input v-model="form.username" placeholder="请输入用户名" size="large" :prefix="IconUser" />
         </a-form-item>

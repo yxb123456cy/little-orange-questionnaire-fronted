@@ -3,23 +3,25 @@
  */
 export interface User {
   /** 用户ID，主键 */
-  id: number;
+  id: number
   /** 用户名，唯一 */
-  username: string;
+  username: string
   /** 邮箱地址，唯一 */
-  email: string;
+  email: string
   /** 密码哈希值 */
-  password_hash: string;
+  password_hash: string
   /** 头像URL */
-  avatar?: string;
+  avatar?: string
   /** 用户角色：admin-管理员，user-普通用户 */
-  role: 'admin' | 'user';
+  role: 'admin' | 'user'
   /** 用户状态：0-禁用，1-启用 */
-  status: 0 | 1;
+  status: 0 | 1
   /** 最后登录时间 */
-  last_login_at?: string;
+  last_login_at?: string
   /** 创建时间 */
-  created_at: string;
+  created_at: string
   /** 更新时间 */
-  updated_at: string;
+  updated_at: string
+  /** tokenValue */
+  token?: string
 }

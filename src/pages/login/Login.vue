@@ -2,27 +2,11 @@
 import { IconLock, IconUser } from '@arco-design/web-vue/es/icon'
 
 import Message from '@arco-design/web-vue/es/message'
-import { reactive, ref } from 'vue'
+import usePageState from './hooks/usePageState'
 
-const loading = ref(false)
+const { loading, form, rules } = usePageState()
 
-const form = reactive({
-  email: '',
-  password: '',
-  remember: false,
-})
-
-const rules = {
-  email: [
-    { required: true, message: '请输入邮箱地址' },
-    { type: 'email', message: '请输入正确的邮箱格式' },
-  ],
-  password: [
-    { required: true, message: '请输入密码' },
-    { minLength: 6, message: '密码长度不能少于6位' },
-  ],
-}
-
+// 处理用户登录 暂时先试用webStorage+Pinia;
 async function handleSubmit({ errors }: any) {
   if (errors)
     return
