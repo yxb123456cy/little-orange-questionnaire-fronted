@@ -124,7 +124,7 @@ router.beforeEach((to, _from, next) => {
 
   // 检查是否需要认证
   const requiresAuth = to.meta?.requiresAuth
-  const isAuthenticated = true // TODO: 从store获取认证状态
+  const isAuthenticated = false // TODO: 从store获取认证状态
 
   if (requiresAuth && !isAuthenticated) {
     next({ name: 'Login', query: { redirect: to.fullPath } })

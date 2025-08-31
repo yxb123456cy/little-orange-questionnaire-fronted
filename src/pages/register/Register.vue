@@ -43,6 +43,7 @@ const rules = {
   ],
 }
 
+// 处理注册;
 async function handleSubmit({ errors }: any) {
   if (errors)
     return
@@ -77,7 +78,10 @@ async function handleSubmit({ errors }: any) {
           <span class="logo-icon">🍊</span>
           <span class="logo-text">小橘问卷</span>
         </div>
-        <p class="subtitle">
+        <p class="subtitle" style="color: #ff7a00;font-weight: 800;">
+          Xiaoju Questionnaire
+        </p>
+        <p class="subtitle" style="margin-top: 1vh;">
           创建您的账号
         </p>
       </div>
@@ -138,17 +142,21 @@ async function handleSubmit({ errors }: any) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fafafa;
-  padding: 20px;
+  /* background-color: #fafafa; */
+  background-image: url("/images/bg.png");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  padding: 10px;
 }
 
 .register-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   background: white;
   border-radius: 12px;
   padding: 40px 32px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px #ff7a00;
   border: 1px solid #f0f0f0;
 }
 
@@ -170,7 +178,7 @@ async function handleSubmit({ errors }: any) {
 }
 
 .logo-text {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   color: #ff7a00;
 }

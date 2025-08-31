@@ -52,7 +52,10 @@ async function handleSubmit({ errors }: any) {
           <span class="logo-icon">🍊</span>
           <span class="logo-text">小橘问卷</span>
         </div>
-        <p class="subtitle">
+        <p class="subtitle" style="color: #ff7a00;font-weight: 800;">
+          Xiaoju Questionnaire
+        </p>
+        <p class="subtitle" style="margin-top: 1vh;">
           欢迎回来
         </p>
       </div>
@@ -98,13 +101,16 @@ async function handleSubmit({ errors }: any) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fafafa;
+  background-image: url("/images/bg.png");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
   padding: 20px;
 }
 
 .login-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   background: white;
   border-radius: 12px;
   padding: 40px 32px;
