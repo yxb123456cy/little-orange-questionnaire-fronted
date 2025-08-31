@@ -18,4 +18,4 @@ app.use(ArcoVueIcon)
 app.use(pinia)
 // 挂载路由
 app.use(router)
-app.mount('#root')
+app.mount('#app')

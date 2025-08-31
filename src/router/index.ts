@@ -9,31 +9,7 @@ const routes: RouteRecordRaw[] = [
     name: 'Home',
     redirect: '/login',
   },
-  {
-    path: '/',
-    component: DefaultLayout,
-    children: [
-      {
-        path: '',
-        name: 'Home',
-        component: () => import('../pages/home/Home.vue'),
-        meta: {
-          title: '小橘问卷 - 专业的在线问卷调研平台',
-          requiresAuth: false,
-        },
-      },
-      {
-        path: 'profile',
-        name: 'Profile',
-        component: () => import('../pages/profile/Profile.vue'),
-        meta: {
-          title: '个人中心 - 小橘问卷',
-          requiresAuth: false,
-        },
-      },
 
-    ],
-  },
   {
     path: '/login',
     name: 'Login',
@@ -60,6 +36,31 @@ const routes: RouteRecordRaw[] = [
       title: '忘记密码 - 小橘问卷',
       requiresAuth: false,
     },
+  },
+  {
+    path: '/',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('../pages/home/Home.vue'),
+        meta: {
+          title: '小橘问卷 - 专业的在线问卷调研平台',
+          requiresAuth: false,
+        },
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../pages/profile/Profile.vue'),
+        meta: {
+          title: '个人中心 - 小橘问卷',
+          requiresAuth: false,
+        },
+      },
+
+    ],
   },
   {
     path: '/:pathMatch(.*)*',

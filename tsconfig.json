@@ -5,23 +5,34 @@
     "jsxImportSource": "vue",
     "lib": [
       "DOM",
+      "DOM.Iterable",
+      "ES6",
       "ES2020"
     ],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
-    /* modules */
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    /* type checking */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "noUncheckedSideEffectImports": true
-  }
-
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.vue",
+    "*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
