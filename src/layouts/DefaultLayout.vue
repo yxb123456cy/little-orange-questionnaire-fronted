@@ -9,7 +9,7 @@ import AppHeader from './components/AppHeader.vue'
     <main class="main-content">
       <router-view />
     </main>
-    <AppFooter />
+    <AppFooter v-if="$route.name === 'Home'" />
   </div>
 </template>
 

@@ -13,10 +13,11 @@ import {
 import Message from '@arco-design/web-vue/es/message'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '../../store/modules/user/useUserStore'
 
 const route = useRoute()
 const router = useRouter()
-
+const userStore = useUserStore()
 const selectedKeys = computed(() => {
   const path = route.path
   if (path === '/')
@@ -34,6 +35,7 @@ const selectedKeys = computed(() => {
 
 function handleLogout() {
   // TODO: 实现退出登录逻辑
+  userStore.logOut()
   Message.success('已退出登录')
   router.push('/login')
 }
@@ -53,11 +55,7 @@ function handleLogout() {
 
       <!-- 导航菜单 -->
       <nav class="nav-menu">
-        <a-menu
-          mode="horizontal"
-          :selected-keys="selectedKeys"
-          class="main-menu"
-        >
+        <a-menu mode="horizontal" :selected-keys="selectedKeys" class="main-menu">
           <a-menu-item key="home" class="menu-item" @click="$router.push('/')">
             <template #icon>
               <IconHome />
@@ -97,11 +95,11 @@ function handleLogout() {
           <div class="user-info">
             <div class="avatar-wrapper">
               <a-avatar :size="36" class="user-avatar">
-                <img src="https://via.placeholder.com/36" alt="用户头像">
+                <img :src="userStore.getCurrentUserInfo?.avatar" alt="用户头像">
               </a-avatar>
               <div class="avatar-status" />
             </div>
-            <span class="username">用户名</span>
+            <span class="username">{{ userStore.getCurrentUserInfo?.username }}</span>
             <IconDown class="dropdown-icon" />
           </div>
           <template #content>
@@ -203,8 +201,17 @@ function handleLogout() {
 }
 
 @keyframes shine {
-  0%, 100% { opacity: 0; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 .logo-text {
@@ -305,9 +312,12 @@ function handleLogout() {
 }
 
 @keyframes gentle-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.6;
   }

@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
+import { useUserStore } from '../store/modules/user/useUserStore'
 
 // 路由配置
 const routes: RouteRecordRaw[] = [
@@ -121,10 +122,12 @@ router.beforeEach((to, _from, next) => {
   if (to.meta?.title) {
     document.title = to.meta.title as string
   }
+  const userStore = useUserStore()
 
   // 检查是否需要认证
   const requiresAuth = to.meta?.requiresAuth
-  const isAuthenticated = false // TODO: 从store获取认证状态
+
+  const isAuthenticated = userStore.getTokenValue !== '' // TODO: 从store获取认证状态
 
   if (requiresAuth && !isAuthenticated) {
     next({ name: 'Login', query: { redirect: to.fullPath } })

@@ -1,40 +1,82 @@
 <script setup lang="ts">
 import {
-  IconApps,
+
   IconBarChart,
   IconCamera,
   IconEdit,
   IconEye,
   IconFile,
   IconHeart,
+
   IconPlus,
   IconSettings,
+  IconUser,
 } from '@arco-design/web-vue/es/icon'
+
 import Message from '@arco-design/web-vue/es/message'
-import { reactive, ref } from 'vue'
+import Modal from '@arco-design/web-vue/es/modal'
+import { computed, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../../store/modules/user/useUserStore'
 
+const userStore = useUserStore()
+const router = useRouter()
 const editMode = ref(false)
+// const avatarUploadRef = ref()
 
+// 从store获取当前用户信息
+const currentUser = computed(() => userStore.getCurrentUserInfo)
+
+// 如果没有登录用户，重定向到登录页
+if (!currentUser.value) {
+  router.push('/login')
+}
+
+// 用户信息（从store获取）
 const userInfo = reactive({
-  username: '张三',
-  email: 'zhangsan@example.com',
-  avatar: '',
-  bio: '热爱数据分析的产品经理',
-  createdAt: '2024-01-15T08:00:00Z',
+  username: currentUser.value?.username || '',
+  email: currentUser.value?.email || '',
+  avatar: currentUser.value?.avatar || '',
+  bio: currentUser.value?.introduction || '', // 可以从用户扩展字段获取
+  createdAt: currentUser.value?.created_at || new Date().toISOString(),
+  role: currentUser.value?.role || 'user',
+  status: currentUser.value?.status || 1,
 })
 
+// 用户统计数据（模拟数据，实际应该从API获取）
 const userStats = reactive({
   questionnaires: 12,
   responses: 1580,
   views: 8920,
 })
 
+// 表单数据
 const formData = reactive({
   username: userInfo.username,
   email: userInfo.email,
   bio: userInfo.bio,
 })
 
+// 监听用户信息变化，同步到表单
+watch(currentUser, (newUser) => {
+  if (newUser) {
+    Object.assign(userInfo, {
+      username: newUser.username,
+      email: newUser.email,
+      avatar: newUser.avatar || '',
+      createdAt: newUser.created_at,
+      role: newUser.role,
+      status: newUser.status,
+    })
+    Object.assign(formData, {
+      username: newUser.username,
+      email: newUser.email,
+      bio: userInfo.bio,
+    })
+  }
+}, { immediate: true })
+
+// 最近活动数据
 const recentActivities = ref([
   {
     id: 1,
@@ -56,6 +98,7 @@ const recentActivities = ref([
   },
 ])
 
+// 获取活动图标
 function getActivityIcon(type: string) {
   const iconMap: Record<string, any> = {
     create: IconFile,
@@ -65,10 +108,12 @@ function getActivityIcon(type: string) {
   return iconMap[type] ?? IconFile
 }
 
+// 格式化日期
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('zh-CN')
 }
 
+// 格式化时间
 function formatTime(dateString: string) {
   const now = new Date()
   const date = new Date(dateString)
@@ -84,12 +129,107 @@ function formatTime(dateString: string) {
   return formatDate(dateString)
 }
 
+// 保存个人信息
 function saveProfile() {
-  // TODO: 实现保存逻辑
-  Object.assign(userInfo, formData)
-  editMode.value = false
-  Message.success('个人信息已更新')
+  try {
+    // 验证表单数据
+    if (!formData.username.trim()) {
+      Message.error('用户名不能为空')
+      return
+    }
+    if (!formData.email.trim()) {
+      Message.error('邮箱不能为空')
+      return
+    }
+
+    // 更新用户信息到store
+    const updatedUser = {
+      ...currentUser.value!,
+      username: formData.username,
+      email: formData.email,
+      updated_at: new Date().toISOString(),
+      introduction: formData.bio,
+    }
+
+    userStore.setCurrentUserInfo(updatedUser)
+
+    // 更新本地显示数据
+    Object.assign(userInfo, {
+      username: formData.username,
+      email: formData.email,
+      bio: formData.bio,
+    })
+
+    editMode.value = false
+    Message.success('个人信息已更新')
+  }
+  catch (error) {
+    console.error('保存个人信息失败:', error)
+    Message.error('保存失败，请重试')
+  }
 }
+
+// 更换头像
+function changeAvatar() {
+  // 创建文件输入元素
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'image/*'
+  input.onchange = (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0]
+    if (file) {
+      // 验证文件大小（限制2MB）
+      if (file.size > 2 * 1024 * 1024) {
+        Message.error('图片大小不能超过2MB')
+        return
+      }
+
+      // 创建预览URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const avatarUrl = e.target?.result as string
+
+        // 更新头像
+        userInfo.avatar = avatarUrl
+
+        // 更新store中的用户信息
+        const updatedUser = {
+          ...currentUser.value!,
+          avatar: avatarUrl,
+          updated_at: new Date().toISOString(),
+        }
+        userStore.setCurrentUserInfo(updatedUser)
+
+        Message.success('头像更新成功')
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+  input.click()
+}
+
+// 退出登录
+function handleLogout() {
+  Modal.confirm({
+    title: '确认退出登录？',
+    content: '退出后需要重新登录才能访问个人信息',
+    onOk: () => {
+      userStore.logOut()
+      Message.success('已退出登录')
+      router.push('/login')
+    },
+  })
+}
+
+// 获取用户角色显示文本
+const roleText = computed(() => {
+  return userInfo.role === 'admin' ? '管理员' : '普通用户'
+})
+
+// 获取用户状态显示文本
+const statusText = computed(() => {
+  return userInfo.status === 1 ? '正常' : '禁用'
+})
 </script>
 
 <template>
@@ -100,9 +240,12 @@ function saveProfile() {
         <div class="profile-header">
           <div class="avatar-section">
             <a-avatar :size="80" class="user-avatar">
-              <img :src="userInfo.avatar || 'https://via.placeholder.com/80'" alt="用户头像">
+              <img
+                :src="userInfo.avatar || `https://via.placeholder.com/80?text=${encodeURIComponent(userInfo.username.charAt(0))}`"
+                :alt="`${userInfo.username}的头像`"
+              >
             </a-avatar>
-            <a-button type="text" class="change-avatar-btn">
+            <a-button type="text" class="change-avatar-btn" @click="changeAvatar">
               <template #icon>
                 <IconCamera />
               </template>
@@ -110,12 +253,26 @@ function saveProfile() {
             </a-button>
           </div>
           <div class="user-info">
-            <h2 class="username">
-              {{ userInfo.username }}
-            </h2>
+            <div class="user-title">
+              <h2 class="username">
+                {{ userInfo.username }}
+              </h2>
+              <a-tag :color="userInfo.role === 'admin' ? 'red' : 'blue'" class="role-tag">
+                {{ roleText }}
+              </a-tag>
+            </div>
             <p class="email">
               {{ userInfo.email }}
             </p>
+            <div class="user-meta">
+              <span class="meta-item">
+                <IconUser class="meta-icon" />
+                状态：{{ statusText }}
+              </span>
+              <span class="meta-item">
+                注册时间：{{ formatDate(userInfo.createdAt) }}
+              </span>
+            </div>
             <div class="user-stats">
               <div class="stat">
                 <span class="stat-number">{{ userStats.questionnaires }}</span>
@@ -130,6 +287,20 @@ function saveProfile() {
                 <span class="stat-label">浏览</span>
               </div>
             </div>
+          </div>
+          <div class="profile-actions">
+            <a-button type="outline" @click="$router.push('/settings')">
+              <template #icon>
+                <IconSettings />
+              </template>
+              设置
+            </a-button>
+            <a-button type="outline" status="danger" @click="handleLogout">
+              <template #icon>
+                <IconLogout />
+              </template>
+              退出
+            </a-button>
           </div>
         </div>
       </div>
@@ -149,10 +320,10 @@ function saveProfile() {
           </div>
           <div class="card-content">
             <a-form v-if="editMode" :model="formData" layout="vertical">
-              <a-form-item label="用户名">
+              <a-form-item label="用户名" field="username" :rules="[{ required: true, message: '请输入用户名' }]">
                 <a-input v-model="formData.username" placeholder="请输入用户名" />
               </a-form-item>
-              <a-form-item label="邮箱">
+              <a-form-item label="邮箱" field="email" :rules="[{ required: true, message: '请输入邮箱' }, { type: 'email', message: '请输入正确的邮箱格式' }]">
                 <a-input v-model="formData.email" placeholder="请输入邮箱" />
               </a-form-item>
               <a-form-item label="个人简介">
@@ -177,6 +348,16 @@ function saveProfile() {
                 <span>{{ userInfo.email }}</span>
               </div>
               <div class="info-item">
+                <label>用户角色</label>
+                <span>{{ roleText }}</span>
+              </div>
+              <div class="info-item">
+                <label>账户状态</label>
+                <a-tag :color="userInfo.status === 1 ? 'green' : 'red'">
+                  {{ statusText }}
+                </a-tag>
+              </div>
+              <div class="info-item">
                 <label>个人简介</label>
                 <span>{{ userInfo.bio || '暂无简介' }}</span>
               </div>
@@ -197,7 +378,7 @@ function saveProfile() {
             </a-link>
           </div>
           <div class="card-content">
-            <div class="activity-list">
+            <div v-if="recentActivities.length > 0" class="activity-list">
               <div v-for="activity in recentActivities" :key="activity.id" class="activity-item">
                 <div class="activity-icon">
                   <component :is="getActivityIcon(activity.type)" />
@@ -209,6 +390,9 @@ function saveProfile() {
                   <span class="activity-time">{{ formatTime(activity.createdAt) }}</span>
                 </div>
               </div>
+            </div>
+            <div v-else class="empty-state">
+              <p>暂无活动记录</p>
             </div>
           </div>
         </div>
@@ -226,11 +410,11 @@ function saveProfile() {
                 </template>
                 创建问卷
               </a-button>
-              <a-button type="outline" size="large" class="action-btn" @click="$router.push('/templates')">
+              <a-button type="outline" size="large" class="action-btn" @click="$router.push('/starred')">
                 <template #icon>
-                  <IconApps />
+                  <IconHeart />
                 </template>
-                浏览模板
+                星标问卷
               </a-button>
               <a-button type="outline" size="large" class="action-btn" @click="$router.push('/analytics')">
                 <template #icon>
@@ -281,10 +465,12 @@ function saveProfile() {
 
 .avatar-section {
   text-align: center;
+  flex-shrink: 0;
 }
 
 .user-avatar {
   margin-bottom: 12px;
+  border: 3px solid #ff7a00;
 }
 
 .change-avatar-btn {
@@ -292,20 +478,54 @@ function saveProfile() {
   font-size: 12px;
 }
 
+.change-avatar-btn:hover {
+  color: #ff9500;
+}
+
 .user-info {
   flex: 1;
+}
+
+.user-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .username {
   font-size: 24px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 4px;
+  margin: 0;
+}
+
+.role-tag {
+  font-size: 12px;
 }
 
 .email {
   color: #666;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.user-meta {
+  display: flex;
+  gap: 24px;
   margin-bottom: 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-icon {
+  font-size: 14px;
 }
 
 .user-stats {
@@ -327,6 +547,13 @@ function saveProfile() {
 .stat-label {
   font-size: 14px;
   color: #666;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .content-grid {
@@ -430,6 +657,12 @@ function saveProfile() {
   font-size: 12px;
 }
 
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 20px 0;
+}
+
 .action-buttons {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -458,12 +691,23 @@ function saveProfile() {
     gap: 20px;
   }
 
+  .profile-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
   .content-grid {
     grid-template-columns: 1fr;
   }
 
   .user-stats {
     justify-content: center;
+  }
+
+  .user-meta {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
   }
 
   .action-buttons {

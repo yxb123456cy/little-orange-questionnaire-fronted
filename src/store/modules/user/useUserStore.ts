@@ -1,18 +1,40 @@
 import type { User } from '../../../types'
+
 import { Message } from '@arco-design/web-vue'
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { EncryptPasswordMD5 } from '../../../utils/modules/crypto'
+import { GetRandomUuid8Mix } from '../../../utils/modules/uuid'
 
+export interface UserExtensions {
+  introduction?: string // 个人简介;
+  viewed?: number // 被浏览次数;
+  questionnaireCount?: number // 发布的问卷数量;
+  responseCount?: number // 总回答数;
+}
 export const useUserStore = defineStore('user', () => {
+  const tokenValue = ref<string>('')
   // State: 当前浏览器存储的Users 以邮箱作为用户标识;
-  const userList = ref<User[]>([]) // 初始为空数组
+  const userList = ref<Array<User & UserExtensions>>([]) // 初始为空数组
   // State: 当前登录用户信息
-  const currentUserInfo = ref<User | null>(null)
+  const currentUserInfo = ref<User & UserExtensions | null>(null)
 
   // action: 设置当前登录用户信息
-  function setCurrentUserInfo(userInfo: User) {
+  function setCurrentUserInfo(userInfo: User & UserExtensions) {
     currentUserInfo.value = userInfo
+    // 同时更新userList中的数据;
+    // 根据唯一标识（比如 id 或 email）找到 userList 中的用户并更新
+    const index = userList.value.findIndex(u => u.id === userInfo.id && u.email === userInfo.email)
+
+    if (index !== -1) {
+      // 更新已有用户
+      userList.value[index] = { ...currentUserInfo.value }
+    }
+    else {
+      // 如果没找到，说明是新用户，追加进去
+      userList.value.push(userInfo)
+    }
   }
 
   // action: 注册用户 pinia+LocalStorage模拟;
@@ -34,9 +56,43 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  function login(email: string, password: string): { field?: string, state: boolean } {
+    const exist = userList.value.find(u => u.email === email)
+    if (exist === undefined) {
+      return {
+        field: 'email',
+        state: false,
+      }
+    }
+    else {
+      if (exist.password_hash !== EncryptPasswordMD5(password)) {
+        return {
+          field: 'password',
+          state: false,
+        }
+      }
+      else {
+        tokenValue.value = GetRandomUuid8Mix()
+        // 设置当前登录用户
+        currentUserInfo.value = exist
+        currentUserInfo.value.avatar = 'https://img-baofun.zhhainiao.com/pcwallpaper_ugc_mobile/static/e4aa0cd6cf8b9ae3fe79577403d2db07.jpg'
+        return {
+          state: true,
+          field: '',
+        }
+      }
+    }
+  }
+  // 退出登录
+  function logOut() {
+    currentUserInfo.value = null
+    tokenValue.value = ''
+  }
+
   // getter: 获取当前登录用户信息
   const getCurrentUserInfo = computed(() => currentUserInfo.value)
   const getUserList = computed(() => userList.value)
+  const getTokenValue = computed(() => tokenValue.value)
   return {
     currentUserInfo,
     userList,
@@ -44,6 +100,10 @@ export const useUserStore = defineStore('user', () => {
     registerUser,
     getCurrentUserInfo,
     getUserList,
+    login,
+    tokenValue,
+    getTokenValue,
+    logOut,
   }
 }, {
   // 使用持久化插件;

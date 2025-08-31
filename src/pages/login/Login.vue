@@ -2,10 +2,15 @@
 import { IconLock, IconUser } from '@arco-design/web-vue/es/icon'
 
 import Message from '@arco-design/web-vue/es/message'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../../store/modules/user/useUserStore'
 import usePageState from './hooks/usePageState'
 
+const router = useRouter()
 const { loading, form, rules } = usePageState()
-
+const loginFormRef = ref()
+const userStore = useUserStore()
 // 处理用户登录 暂时先试用webStorage+Pinia;
 async function handleSubmit({ errors }: any) {
   if (errors)
@@ -15,7 +20,32 @@ async function handleSubmit({ errors }: any) {
   try {
     // TODO: 实现登录逻辑
     console.warn('登录信息:', form)
-    Message.success('登录成功')
+    const res = userStore.login(form.email, form.password)
+    if (res.state === true) {
+      Message.success('登录成功')
+      // 跳转至主页
+      router.push('/')
+    }
+    else {
+      if (res.field === 'email') {
+        Message.error('该邮箱未注册')
+        loginFormRef.value?.setFields({
+          email: {
+            status: 'error',
+            message: '该邮箱未注册',
+          },
+        })
+      }
+      if (res.field === 'password') {
+        loginFormRef.value?.setFields({
+          password: {
+            status: 'error',
+            message: '密码错误,请检查密码',
+          },
+        })
+        Message.error('密码错误,请检查密码')
+      }
+    }
   }
   catch (error) {
     console.error(error)
@@ -45,7 +75,10 @@ async function handleSubmit({ errors }: any) {
       </div>
 
       <!-- 登录表单 -->
-      <a-form :model="form" :rules="rules" layout="vertical" class="login-form" @submit="handleSubmit">
+      <a-form
+        ref="loginFormRef" :model="form" :rules="rules" layout="vertical" class="login-form"
+        @submit="handleSubmit"
+      >
         <a-form-item field="email" label="邮箱">
           <a-input v-model="form.email" placeholder="请输入邮箱地址" size="large" :prefix="IconUser" />
         </a-form-item>
