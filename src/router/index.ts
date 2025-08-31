@@ -5,12 +5,6 @@ import DefaultLayout from '../layouts/DefaultLayout.vue'
 // 路由配置
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'Home',
-    redirect: '/login',
-  },
-
-  {
     path: '/login',
     name: 'Login',
     component: () => import('../pages/login/Login.vue'),
@@ -25,15 +19,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/register/Register.vue'),
     meta: {
       title: '注册 - 小橘问卷',
-      requiresAuth: false,
-    },
-  },
-  {
-    path: '/forgot-password',
-    name: 'ForgotPassword',
-    component: () => import('../pages/forgot-password/ForgotPassword.vue'),
-    meta: {
-      title: '忘记密码 - 小橘问卷',
       requiresAuth: false,
     },
   },
@@ -56,10 +41,54 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/profile/Profile.vue'),
         meta: {
           title: '个人中心 - 小橘问卷',
-          requiresAuth: false,
+          requiresAuth: true,
         },
       },
-
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('../pages/settings/Settings.vue'),
+        meta: {
+          title: '设置 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'questionnaires',
+        name: 'Questionnaires',
+        component: () => import('../pages/questionnaires/Questionnaires.vue'),
+        meta: {
+          title: '我的问卷 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'starred',
+        name: 'Starred',
+        component: () => import('../pages/starred/Starred.vue'),
+        meta: {
+          title: '星标问卷 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'trash',
+        name: 'Trash',
+        component: () => import('../pages/trash/Trash.vue'),
+        meta: {
+          title: '回收问卷 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'analytics',
+        name: 'Analytics',
+        component: () => import('../pages/analytics/Analytics.vue'),
+        meta: {
+          title: '数据分析 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
     ],
   },
   {
@@ -70,7 +99,6 @@ const routes: RouteRecordRaw[] = [
       title: '页面未找到 - 小橘问卷',
     },
   },
-
 ]
 
 // 创建路由实例
@@ -88,7 +116,7 @@ const router = createRouter({
 })
 
 // 全局前置守卫
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, _from, next) => {
   // 设置页面标题
   if (to.meta?.title) {
     document.title = to.meta.title as string
@@ -96,15 +124,13 @@ router.beforeEach((to, _, next) => {
 
   // 检查是否需要认证
   const requiresAuth = to.meta?.requiresAuth
-  const isAuthenticated = false // TODO: 从store或localStorage获取认证状态
+  const isAuthenticated = true // TODO: 从store获取认证状态
 
   if (requiresAuth && !isAuthenticated) {
-    // 需要认证但未登录，重定向到登录页
     next({ name: 'Login', query: { redirect: to.fullPath } })
   }
   else if (!requiresAuth && isAuthenticated && (to.name === 'Login' || to.name === 'Register')) {
-    // 已登录用户访问登录/注册页，重定向到仪表板
-    next({ name: 'Dashboard' })
+    next({ name: 'Home' })
   }
   else {
     next()
