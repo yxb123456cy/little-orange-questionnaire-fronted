@@ -17,6 +17,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@arco-design/web-vue": "^2.57.0",
     "@rsbuild/core": "^1.5.0",
     "@rsbuild/plugin-vue": "^1.1.2",
     "@rsdoctor/rspack-plugin": "^1.2.3",
