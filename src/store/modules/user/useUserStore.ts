@@ -75,7 +75,7 @@ export const useUserStore = defineStore('user', () => {
         tokenValue.value = GetRandomUuid8Mix()
         // 设置当前登录用户
         currentUserInfo.value = exist
-        currentUserInfo.value.avatar = 'https://img-baofun.zhhainiao.com/pcwallpaper_ugc_mobile/static/e4aa0cd6cf8b9ae3fe79577403d2db07.jpg'
+          currentUserInfo.value.avatar = 'https://qy-red-book.oss-cn-guangzhou.aliyuncs.com/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E5%B0%91%E5%A5%B3-%E7%9C%9F%E4%BA%BA%E7%B3%BB%E5%88%97.png'
         return {
           state: true,
           field: '',

@@ -239,7 +239,7 @@ const statusText = computed(() => {
       <div class="profile-card">
         <div class="profile-header">
           <div class="avatar-section">
-            <a-avatar :size="80" class="user-avatar">
+            <a-avatar :size="120" class="user-avatar">
               <img
                 :src="userInfo.avatar || `https://via.placeholder.com/80?text=${encodeURIComponent(userInfo.username.charAt(0))}`"
                 :alt="`${userInfo.username}的头像`"
