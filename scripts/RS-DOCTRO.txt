@@ -1,0 +1,2 @@
+# 开启 Rsdoctor
+RSDOCTOR=true npm run build
