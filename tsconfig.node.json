@@ -1,27 +1,25 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
     "moduleDetection": "force",
-    "useDefineForClassFields": true,
-    /* modules */
     "module": "ESNext",
+
+    /* Bundler mode */
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    /* type checking */
+
+    /* Linting */
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
     "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "skipLibCheck": true,
     "noUncheckedSideEffectImports": true
-  }
-
+  },
+  "include": ["vite.config.ts"]
 }

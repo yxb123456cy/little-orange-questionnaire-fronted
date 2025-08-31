@@ -1,5 +1,5 @@
-import { defineConfig } from '@rstest/core';
+import { defineConfig } from '@rstest/core'
 
 export default defineConfig({
-    testEnvironment: 'node',
-});
+  testEnvironment: 'node',
+})

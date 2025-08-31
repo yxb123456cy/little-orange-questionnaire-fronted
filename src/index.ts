@@ -1,17 +1,21 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import './index.css';
-import ArcoVue from '@arco-design/web-vue';
-import '@arco-design/web-vue/dist/arco.css';
+import ArcoVue from '@arco-design/web-vue'
 // 引入ArcoVue ICON库
-import ArcoVueIcon from '@arco-design/web-vue/es/icon';
-import pinia from './store/base';
+import ArcoVueIcon from '@arco-design/web-vue/es/icon'
+import { createApp } from 'vue'
+import App from './App.vue'
+// 引入路由
+import router from './router'
+import pinia from './store/base'
+import './index.css'
+import '@arco-design/web-vue/dist/arco.css'
 
 const app = createApp(App)
 // 使用ArcoVue 全量注册;
-app.use(ArcoVue);
+app.use(ArcoVue)
 // 使用 ArcoVue ICON库
-app.use(ArcoVueIcon);
+app.use(ArcoVueIcon)
 // 挂载pinia
-app.use(pinia);
-app.mount('#root');
+app.use(pinia)
+// 挂载路由
+app.use(router)
+app.mount('#root')
