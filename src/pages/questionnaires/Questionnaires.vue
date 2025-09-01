@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import {
-  IconCalendar,
-  IconCopy,
+
   IconDelete,
   IconEdit,
   IconEye,
-  IconFolder,
   IconHeart,
   IconList,
-  IconMore,
   IconPlus,
   IconSearch,
-  IconUser,
+
 } from '@arco-design/web-vue/es/icon'
 import Message from '@arco-design/web-vue/es/message'
 import Modal from '@arco-design/web-vue/es/modal'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import QuestionnaireCard from '../../components/business/questionnaire-card/QuestionnaireCard.vue'
 import usePageState from './hooks/usePageState'
 
 const router = useRouter()
@@ -81,10 +79,6 @@ function previewQuestionnaire(questionnaire: any) {
 
 function editQuestionnaire(questionnaire: any) {
   router.push(`/questionnaires/${questionnaire.id}/edit`)
-}
-
-function duplicateQuestionnaire(questionnaire: any) {
-  Message.success(`已复制问卷：${questionnaire.title}`)
 }
 
 function toggleStar(questionnaire: any) {
@@ -165,7 +159,7 @@ onMounted(() => {
                 <IconApps /> 卡片
               </a-radio>
               <a-radio :value="table">
-                <IconList />  表格
+                <IconList /> 表格
               </a-radio>
             </a-radio-group>
           </div>
@@ -265,97 +259,11 @@ onMounted(() => {
               创建问卷
             </a-button>
           </div>
+
           <div v-else class="questionnaire-grid">
             <div v-for="questionnaire in paginatedQuestionnaires" :key="questionnaire.id" class="questionnaire-card">
-              <div class="card-header">
-                <div class="card-status">
-                  <a-tag :color="getStatusColor(questionnaire.status)" class="status-tag">
-                    {{ getStatusText(questionnaire.status) }}
-                  </a-tag>
-                  <div class="card-actions">
-                    <a-button
-                      type="text" size="small" :class="{ starred: questionnaire.is_starred }"
-                      @click="toggleStar(questionnaire)"
-                    >
-                      <template #icon>
-                        <IconHeart :style="{ color: questionnaire.is_starred ? '#ff7a00' : '#999' }" />
-                      </template>
-                    </a-button>
-                    <a-dropdown trigger="click">
-                      <a-button type="text" size="small">
-                        <template #icon>
-                          <IconMore />
-                        </template>
-                      </a-button>
-                      <template #content>
-                        <a-doption @click="previewQuestionnaire(questionnaire)">
-                          <template #icon>
-                            <IconEye />
-                          </template>
-                          预览
-                        </a-doption>
-                        <a-doption @click="editQuestionnaire(questionnaire)">
-                          <template #icon>
-                            <IconEdit />
-                          </template>
-                          编辑
-                        </a-doption>
-                        <a-doption @click="duplicateQuestionnaire(questionnaire)">
-                          <template #icon>
-                            <IconCopy />
-                          </template>
-                          复制
-                        </a-doption>
-                        <a-doption class="danger-option" @click="moveToTrash(questionnaire)">
-                          <template #icon>
-                            <IconDelete />
-                          </template>
-                          移至回收站
-                        </a-doption>
-                      </template>
-                    </a-dropdown>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card-content" @click="previewQuestionnaire(questionnaire)">
-                <h3 class="questionnaire-title">
-                  {{ questionnaire.title }}
-                </h3>
-                <p class="questionnaire-description">
-                  {{ questionnaire.description || '暂无简介' }}
-                </p>
-
-                <div class="questionnaire-meta">
-                  <div class="meta-item">
-                    <IconFolder class="meta-icon" />
-                    <span>{{ questionnaire.group || '未分组' }}</span>
-                  </div>
-                  <div class="meta-item">
-                    <IconCalendar class="meta-icon" />
-                    <span>{{ formatDate(questionnaire.created_at) }}</span>
-                  </div>
-                </div>
-
-                <div v-if="questionnaire.tags && questionnaire.tags.length > 0" class="questionnaire-tags">
-                  <a-tag v-for="tag in questionnaire.tags" :key="tag" size="small" class="tag">
-                    {{ tag }}
-                  </a-tag>
-                </div>
-              </div>
-
-              <div class="card-footer">
-                <div class="questionnaire-stats">
-                  <span class="stat-item">
-                    <IconUser class="stat-icon" />
-                    {{ questionnaire.response_count || 0 }} 回答
-                  </span>
-                  <span class="stat-item">
-                    <IconEye class="stat-icon" />
-                    {{ questionnaire.view_count || 0 }} 浏览
-                  </span>
-                </div>
-              </div>
+              <!-- 使用自定义QuestionnaireCard组件 -->
+              <QuestionnaireCard :questionnaire="questionnaire" @remove="moveToTrash" />
             </div>
           </div>
         </div>
