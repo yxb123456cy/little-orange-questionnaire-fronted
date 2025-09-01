@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  IconApps,
   IconCalendar,
   IconCopy,
   IconDelete,
@@ -16,15 +15,15 @@ import {
 } from '@arco-design/web-vue/es/icon'
 import Message from '@arco-design/web-vue/es/message'
 import Modal from '@arco-design/web-vue/es/modal'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import usePageState from './hooks/usePageState'
 
 const router = useRouter()
-
+const viewMode = ref<string>('card')
 const {
   loading,
-  viewMode,
+
   searchKeyword,
   selectedGroup,
   selectedTags,
@@ -106,6 +105,8 @@ function moveToTrash(questionnaire: any) {
     },
   })
 }
+const card = 'card'
+const table = 'table'
 
 // 生命周期
 onMounted(() => {
@@ -158,26 +159,13 @@ onMounted(() => {
 
           <!-- 视图切换 -->
           <div class="view-toggle">
-            <a-radio-group v-model="viewMode" type="button" size="large">
-              <a-radio value="card">
-                <template #radio="{ checked }">
-                  <a-button :type="checked ? 'primary' : 'outline'" class="view-btn">
-                    <template #icon>
-                      <IconApps />
-                    </template>
-                    卡片
-                  </a-button>
-                </template>
+            <!-- //@change="(value:string) => handleViewModechanged(value)" -->
+            <a-radio-group v-model="viewMode" size="large">
+              <a-radio :value="card">
+                <IconApps /> 卡片
               </a-radio>
-              <a-radio value="table">
-                <template #radio="{ checked }">
-                  <a-button :type="checked ? 'primary' : 'outline'" class="view-btn">
-                    <template #icon>
-                      <IconList />
-                    </template>
-                    表格
-                  </a-button>
-                </template>
+              <a-radio :value="table">
+                <IconList />  表格
               </a-radio>
             </a-radio-group>
           </div>

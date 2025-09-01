@@ -41,7 +41,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2024 小橘问卷. 保留所有权利.</p>
+        <p>&copy; 2025 小橘问卷. 保留所有权利.</p>
       </div>
     </div>
   </footer>

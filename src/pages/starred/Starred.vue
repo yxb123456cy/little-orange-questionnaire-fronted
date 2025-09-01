@@ -155,12 +155,8 @@ onMounted(() => {
           <!-- 搜索框 -->
           <div class="search-box">
             <a-input-search
-              v-model="searchKeyword"
-              placeholder="搜索星标问卷..."
-              size="large"
-              allow-clear
-              @search="handleSearch"
-              @clear="handleSearch"
+              v-model="searchKeyword" placeholder="搜索星标问卷..." size="large" allow-clear
+              @search="handleSearch" @clear="handleSearch"
             >
               <template #prefix>
                 <IconSearch />
@@ -170,26 +166,13 @@ onMounted(() => {
 
           <!-- 视图切换 -->
           <div class="view-toggle">
-            <a-radio-group v-model="viewMode" type="button" size="large">
+            <!-- //@change="(value:string) => handleViewModechanged(value)" -->
+            <a-radio-group v-model="viewMode" size="large">
               <a-radio value="card">
-                <template #radio="{ checked }">
-                  <a-button :type="checked ? 'primary' : 'outline'" class="view-btn">
-                    <template #icon>
-                      <IconApps />
-                    </template>
-                    卡片
-                  </a-button>
-                </template>
+                <IconApps />卡片
               </a-radio>
               <a-radio value="table">
-                <template #radio="{ checked }">
-                  <a-button :type="checked ? 'primary' : 'outline'" class="view-btn">
-                    <template #icon>
-                      <IconList />
-                    </template>
-                    表格
-                  </a-button>
-                </template>
+                <IconList /> 表格
               </a-radio>
             </a-radio-group>
           </div>
@@ -200,11 +183,7 @@ onMounted(() => {
           <div class="filter-item">
             <label class="filter-label">分组：</label>
             <a-select
-              v-model="selectedGroup"
-              placeholder="选择分组"
-              size="large"
-              style="width: 160px"
-              allow-clear
+              v-model="selectedGroup" placeholder="选择分组" size="large" style="width: 160px" allow-clear
               @change="handleFilter"
             >
               <a-option value="">
@@ -220,11 +199,7 @@ onMounted(() => {
           <div class="filter-item">
             <label class="filter-label">状态：</label>
             <a-select
-              v-model="selectedStatus"
-              placeholder="选择状态"
-              size="large"
-              style="width: 120px"
-              allow-clear
+              v-model="selectedStatus" placeholder="选择状态" size="large" style="width: 120px" allow-clear
               @change="handleFilter"
             >
               <a-option value="">
@@ -245,12 +220,7 @@ onMounted(() => {
           <!-- 排序 -->
           <div class="filter-item">
             <label class="filter-label">排序：</label>
-            <a-select
-              v-model="sortBy"
-              size="large"
-              style="width: 140px"
-              @change="handleFilter"
-            >
+            <a-select v-model="sortBy" size="large" style="width: 140px" @change="handleFilter">
               <a-option value="starred_desc">
                 收藏时间↓
               </a-option>
@@ -291,8 +261,7 @@ onMounted(() => {
           </div>
           <div v-else class="questionnaire-grid">
             <div
-              v-for="questionnaire in paginatedQuestionnaires"
-              :key="questionnaire.id"
+              v-for="questionnaire in paginatedQuestionnaires" :key="questionnaire.id"
               class="questionnaire-card starred-card"
             >
               <div class="card-header">
@@ -301,12 +270,7 @@ onMounted(() => {
                     {{ getStatusText(questionnaire.status) }}
                   </a-tag>
                   <div class="card-actions">
-                    <a-button
-                      type="text"
-                      size="small"
-                      class="star-btn active"
-                      @click="removeStar(questionnaire)"
-                    >
+                    <a-button type="text" size="small" class="star-btn active" @click="removeStar(questionnaire)">
                       <template #icon>
                         <IconHeart :style="{ color: '#ff7a00' }" />
                       </template>
@@ -397,12 +361,8 @@ onMounted(() => {
         <!-- 表格视图 -->
         <div v-else class="table-view">
           <a-table
-            :columns="tableColumns"
-            :data="paginatedQuestionnaires"
-            :loading="loading"
-            :pagination="false"
-            row-key="id"
-            class="questionnaire-table"
+            :columns="tableColumns" :data="paginatedQuestionnaires" :loading="loading" :pagination="false"
+            row-key="id" class="questionnaire-table"
           >
             <template #title="{ record }">
               <div class="table-title" @click="previewQuestionnaire(record)">
@@ -423,12 +383,7 @@ onMounted(() => {
 
             <template #actions="{ record }">
               <div class="table-actions">
-                <a-button
-                  type="text"
-                  size="small"
-                  class="star-btn active"
-                  @click="removeStar(record)"
-                >
+                <a-button type="text" size="small" class="star-btn active" @click="removeStar(record)">
                   <template #icon>
                     <IconHeart :style="{ color: '#ff7a00' }" />
                   </template>
@@ -456,14 +411,9 @@ onMounted(() => {
         <!-- 分页 -->
         <div v-if="filteredQuestionnaires.length > 0" class="pagination-wrapper">
           <a-pagination
-            v-model:current="currentPage"
-            v-model:page-size="pageSize"
-            :total="filteredQuestionnaires.length"
-            :show-total="true"
-            :show-jumper="true"
-            :show-page-size="true"
-            :page-size-options="['10', '20', '50', '100']"
-            class="pagination"
+            v-model:current="currentPage" v-model:page-size="pageSize"
+            :total="filteredQuestionnaires.length" :show-total="true" :show-jumper="true" :show-page-size="true"
+            :page-size-options="['10', '20', '50', '100']" class="pagination"
           />
         </div>
       </div>

@@ -12,6 +12,9 @@ export default function usePageState() {
   const currentPage = ref(1)
   const pageSize = ref(12)
 
+  const handleViewModechanged = (e: any) => {
+    console.warn(e)
+  }
   // 筛选选项
   const groups = ref([
     { label: '产品调研', value: 'product' },
@@ -217,5 +220,6 @@ export default function usePageState() {
     tableColumns,
     filteredQuestionnaires,
     paginatedQuestionnaires,
+    handleViewModechanged,
   }
 }
