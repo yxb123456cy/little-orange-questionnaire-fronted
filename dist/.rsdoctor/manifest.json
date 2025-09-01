@@ -1,0 +1,52 @@
+{
+  "client": {
+    "enableRoutes": [
+      "Overall",
+      "Compile.WebpackLoaders",
+      "Compile.WebpackPlugins",
+      "Bundle.ModuleGraph",
+      "Bundle.BundleSize"
+    ]
+  },
+  "data": {
+    "hash": "a9ae1327b5fbde91366972490e1f8006",
+    "root": "E:\\001_云工匠\\small-Orange-questionnaire",
+    "envinfo": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\envinfo\\0"
+    ],
+    "pid": 5260,
+    "errors": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\errors\\0"
+    ],
+    "configs": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\configs\\0"
+    ],
+    "summary": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\summary\\0"
+    ],
+    "resolver": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\resolver\\0"
+    ],
+    "loader": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\loader\\0"
+    ],
+    "moduleGraph": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\moduleGraph\\0"
+    ],
+    "chunkGraph": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\chunkGraph\\0"
+    ],
+    "moduleCodeMap": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\moduleCodeMap\\0"
+    ],
+    "plugin": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\plugin\\0"
+    ],
+    "packageGraph": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\packageGraph\\0"
+    ],
+    "otherReports": [
+      "E:\\001_云工匠\\small-Orange-questionnaire\\dist\\.rsdoctor\\otherReports\\0"
+    ]
+  }
+}
