@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../pages/login/Login.vue'),
+    component: () => import('@/pages/login/Login.vue'),
     meta: {
       title: '登录 - 小橘问卷',
       requiresAuth: false,
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/register',
     name: 'Register',
-    component: () => import('../pages/register/Register.vue'),
+    component: () => import('@/pages/register/Register.vue'),
     meta: {
       title: '注册 - 小橘问卷',
       requiresAuth: false,
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'Home',
-        component: () => import('../pages/home/Home.vue'),
+        component: () => import('@/pages/home/Home.vue'),
         meta: {
           title: '小橘问卷 - 专业的在线问卷调研平台',
           requiresAuth: false,
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'profile',
         name: 'Profile',
-        component: () => import('../pages/profile/Profile.vue'),
+        component: () => import('@/pages/profile/Profile.vue'),
         meta: {
           title: '个人中心 - 小橘问卷',
           requiresAuth: true,
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'settings',
         name: 'Settings',
-        component: () => import('../pages/settings/Settings.vue'),
+        component: () => import('@/pages/settings/Settings.vue'),
         meta: {
           title: '设置 - 小橘问卷',
           requiresAuth: true,
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'questionnaires',
         name: 'Questionnaires',
-        component: () => import('../pages/questionnaires/Questionnaires.vue'),
+        component: () => import('@/pages/questionnaires/Questionnaires.vue'),
         meta: {
           title: '我的问卷 - 小橘问卷',
           requiresAuth: true,
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'starred',
         name: 'Starred',
-        component: () => import('../pages/starred/Starred.vue'),
+        component: () => import('@/pages/starred/Starred.vue'),
         meta: {
           title: '星标问卷 - 小橘问卷',
           requiresAuth: true,
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'trash',
         name: 'Trash',
-        component: () => import('../pages/trash/Trash.vue'),
+        component: () => import('@/pages/trash/Trash.vue'),
         meta: {
           title: '回收问卷 - 小橘问卷',
           requiresAuth: true,
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'analytics',
         name: 'Analytics',
-        component: () => import('../pages/analytics/Analytics.vue'),
+        component: () => import('@/pages/analytics/Analytics.vue'),
         meta: {
           title: '数据分析 - 小橘问卷',
           requiresAuth: true,
@@ -95,7 +95,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: () => import('../pages/error/404/404.vue'),
+    component: () => import('@/pages/error/404/404.vue'),
     meta: {
       title: '页面未找到 - 小橘问卷',
     },
