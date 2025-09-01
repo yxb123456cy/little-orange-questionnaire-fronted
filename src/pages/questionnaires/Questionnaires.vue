@@ -124,6 +124,7 @@ onMounted(() => {
       <div class="page-header">
         <div class="header-left">
           <h1 class="page-title">
+            <IconList />
             我的问卷
           </h1>
           <p class="page-description">
@@ -146,12 +147,8 @@ onMounted(() => {
           <!-- 搜索框 -->
           <div class="search-box">
             <a-input-search
-              v-model="searchKeyword"
-              placeholder="搜索问卷标题或简介..."
-              size="large"
-              allow-clear
-              @search="handleSearch"
-              @clear="handleSearch"
+              v-model="searchKeyword" placeholder="搜索问卷标题或简介..." size="large" allow-clear
+              @search="handleSearch" @clear="handleSearch"
             >
               <template #prefix>
                 <IconSearch />
@@ -191,11 +188,7 @@ onMounted(() => {
           <div class="filter-item">
             <label class="filter-label">分组：</label>
             <a-select
-              v-model="selectedGroup"
-              placeholder="选择分组"
-              size="large"
-              style="width: 160px"
-              allow-clear
+              v-model="selectedGroup" placeholder="选择分组" size="large" style="width: 160px" allow-clear
               @change="handleFilter"
             >
               <a-option value="">
@@ -211,12 +204,7 @@ onMounted(() => {
           <div class="filter-item">
             <label class="filter-label">标签：</label>
             <a-select
-              v-model="selectedTags"
-              placeholder="选择标签"
-              size="large"
-              style="width: 200px"
-              multiple
-              allow-clear
+              v-model="selectedTags" placeholder="选择标签" size="large" style="width: 200px" multiple allow-clear
               @change="handleFilter"
             >
               <a-option v-for="tag in tags" :key="tag.value" :value="tag.value">
@@ -229,11 +217,7 @@ onMounted(() => {
           <div class="filter-item">
             <label class="filter-label">状态：</label>
             <a-select
-              v-model="selectedStatus"
-              placeholder="选择状态"
-              size="large"
-              style="width: 120px"
-              allow-clear
+              v-model="selectedStatus" placeholder="选择状态" size="large" style="width: 120px" allow-clear
               @change="handleFilter"
             >
               <a-option value="">
@@ -254,12 +238,7 @@ onMounted(() => {
           <!-- 排序 -->
           <div class="filter-item">
             <label class="filter-label">排序：</label>
-            <a-select
-              v-model="sortBy"
-              size="large"
-              style="width: 140px"
-              @change="handleFilter"
-            >
+            <a-select v-model="sortBy" size="large" style="width: 140px" @change="handleFilter">
               <a-option value="created_desc">
                 创建时间↓
               </a-option>
@@ -299,11 +278,7 @@ onMounted(() => {
             </a-button>
           </div>
           <div v-else class="questionnaire-grid">
-            <div
-              v-for="questionnaire in paginatedQuestionnaires"
-              :key="questionnaire.id"
-              class="questionnaire-card"
-            >
+            <div v-for="questionnaire in paginatedQuestionnaires" :key="questionnaire.id" class="questionnaire-card">
               <div class="card-header">
                 <div class="card-status">
                   <a-tag :color="getStatusColor(questionnaire.status)" class="status-tag">
@@ -311,9 +286,7 @@ onMounted(() => {
                   </a-tag>
                   <div class="card-actions">
                     <a-button
-                      type="text"
-                      size="small"
-                      :class="{ starred: questionnaire.is_starred }"
+                      type="text" size="small" :class="{ starred: questionnaire.is_starred }"
                       @click="toggleStar(questionnaire)"
                     >
                       <template #icon>
@@ -402,21 +375,13 @@ onMounted(() => {
         <!-- 表格视图 -->
         <div v-else class="table-view">
           <a-table
-            :columns="tableColumns"
-            :data="paginatedQuestionnaires"
-            :loading="loading"
-            :pagination="false"
-            row-key="id"
-            class="questionnaire-table"
+            :columns="tableColumns" :data="paginatedQuestionnaires" :loading="loading" :pagination="false"
+            row-key="id" class="questionnaire-table"
           >
             <template #title="{ record }">
               <div class="table-title" @click="previewQuestionnaire(record)">
                 <span class="title-text">{{ record.title }}</span>
-                <IconHeart
-                  v-if="record.is_starred"
-                  class="star-icon"
-                  :style="{ color: '#ff7a00' }"
-                />
+                <IconHeart v-if="record.is_starred" class="star-icon" :style="{ color: '#ff7a00' }" />
               </div>
             </template>
 
@@ -428,11 +393,7 @@ onMounted(() => {
 
             <template #tags="{ record }">
               <div class="table-tags">
-                <a-tag
-                  v-for="tag in (record.tags || []).slice(0, 2)"
-                  :key="tag"
-                  size="small"
-                >
+                <a-tag v-for="tag in (record.tags || []).slice(0, 2)" :key="tag" size="small">
                   {{ tag }}
                 </a-tag>
                 <span v-if="record.tags && record.tags.length > 2" class="more-tags">
@@ -447,12 +408,7 @@ onMounted(() => {
 
             <template #actions="{ record }">
               <div class="table-actions">
-                <a-button
-                  type="text"
-                  size="small"
-                  :class="{ starred: record.is_starred }"
-                  @click="toggleStar(record)"
-                >
+                <a-button type="text" size="small" :class="{ starred: record.is_starred }" @click="toggleStar(record)">
                   <template #icon>
                     <IconHeart :style="{ color: record.is_starred ? '#ff7a00' : '#999' }" />
                   </template>
@@ -480,14 +436,9 @@ onMounted(() => {
         <!-- 分页 -->
         <div v-if="filteredQuestionnaires.length > 0" class="pagination-wrapper">
           <a-pagination
-            v-model:current="currentPage"
-            v-model:page-size="pageSize"
-            :total="filteredQuestionnaires.length"
-            :show-total="true"
-            :show-jumper="true"
-            :show-page-size="true"
-            :page-size-options="['10', '20', '50', '100']"
-            class="pagination"
+            v-model:current="currentPage" v-model:page-size="pageSize"
+            :total="filteredQuestionnaires.length" :show-total="true" :show-jumper="true" :show-page-size="true"
+            :page-size-options="['10', '20', '50', '100']" class="pagination"
           />
         </div>
       </div>
