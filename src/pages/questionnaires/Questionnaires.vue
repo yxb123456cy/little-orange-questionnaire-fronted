@@ -8,6 +8,7 @@ import {
 import Message from '@arco-design/web-vue/es/message'
 import { onMounted } from 'vue'
 import QuestionnaireCard from '../../components/business/questionnaire-card/QuestionnaireCard.vue'
+import QuestionnairePageHeader from '../../components/business/questionnaire-page-header/QuestionnairePageHeader.vue'
 import QuestionnaireTable from '../../components/business/questionnaire-table/QuestionnaireTable.vue'
 import usePageState from './hooks/usePageState'
 
@@ -23,10 +24,8 @@ const {
   pageSize,
   groups,
   tags,
-
   filteredQuestionnaires,
   paginatedQuestionnaires,
-
   handleSearch,
   handleFilter,
   createQuestionnaire,
@@ -52,25 +51,17 @@ onMounted(() => {
   <div class="questionnaires">
     <div class="questionnaires-container">
       <!-- 页面头部 -->
-      <div class="page-header">
-        <div class="header-left">
-          <h1 class="page-title">
-            <IconList />
-            我的问卷
-          </h1>
-          <p class="page-description">
-            管理和查看您创建的所有问卷
-          </p>
-        </div>
-        <div class="header-right">
-          <a-button type="primary" size="large" class="create-btn" @click="createQuestionnaire">
-            <template #icon>
-              <IconPlus />
-            </template>
-            创建问卷
-          </a-button>
-        </div>
-      </div>
+      <QuestionnairePageHeader
+        ben-type="primary" btn-text="创建问卷" description="管理和查看您创建的所有问卷" title="我的问卷"
+        @click="createQuestionnaire"
+      >
+        <template #titleIcon>
+          <IconList />
+        </template>
+        <template #btnIcon>
+          <IconPlus />
+        </template>
+      </QuestionnairePageHeader>
 
       <!-- 筛选和搜索区域 -->
       <div class="filter-section">
@@ -203,13 +194,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
-
         <!-- 表格视图 -->
         <div v-else class="table-view">
+          <!-- 使用自定义QuestionnaireTable组件 -->
           <QuestionnaireTable
-            :questionnaires="paginatedQuestionnaires" :loading="loading" @preview="previewQuestionnaire"
-            @edit="editQuestionnaire" @toggle-star="toggleStar"
-            @remove="moveToTrash"
+            :questionnaires="paginatedQuestionnaires" :loading="loading"
+            @preview="previewQuestionnaire" @edit="editQuestionnaire" @toggle-star="toggleStar" @remove="moveToTrash"
             @duplicate="duplicateQuestionnaire"
           />
         </div>

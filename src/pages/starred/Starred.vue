@@ -19,6 +19,7 @@ import Modal from '@arco-design/web-vue/es/modal'
 
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import QuestionnairePageHeader from '../../components/business/questionnaire-page-header/QuestionnairePageHeader.vue'
 import usePageState from './hooks/usePageState'
 
 const router = useRouter()
@@ -129,25 +130,17 @@ onMounted(() => {
   <div class="starred">
     <div class="starred-container">
       <!-- 页面头部 -->
-      <div class="page-header">
-        <div class="header-left">
-          <h1 class="page-title">
-            <IconHeart class="title-icon" />
-            星标问卷
-          </h1>
-          <p class="page-description">
-            您收藏的重要问卷
-          </p>
-        </div>
-        <div class="header-right">
-          <a-button type="primary" size="large" class="create-btn" @click="createQuestionnaire">
-            <template #icon>
-              <IconPlus />
-            </template>
-            创建问卷
-          </a-button>
-        </div>
-      </div>
+      <QuestionnairePageHeader
+        ben-type="primary" btn-text="创建问卷" description="您收藏的重要问卷" title="星标问卷"
+        @click="createQuestionnaire"
+      >
+        <template #titleIcon>
+          <IconHeart class="title-icon" />
+        </template>
+        <template #btnIcon>
+          <IconPlus />
+        </template>
+      </QuestionnairePageHeader>
 
       <!-- 筛选和搜索区域 -->
       <div class="filter-section">

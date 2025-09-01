@@ -15,6 +15,7 @@ import Message from '@arco-design/web-vue/es/message'
 import Modal from '@arco-design/web-vue/es/modal'
 
 import { onMounted } from 'vue'
+import QuestionnairePageHeader from '../../components/business/questionnaire-page-header/QuestionnairePageHeader.vue'
 import usePageState from './hooks/usePageState'
 
 const {
@@ -139,28 +140,17 @@ onMounted(() => {
   <div class="trash">
     <div class="trash-container">
       <!-- 页面头部 -->
-      <div class="page-header">
-        <div class="header-left">
-          <h1 class="page-title">
-            <IconDelete class="title-icon" />
-            回收问卷
-          </h1>
-          <p class="page-description">
-            管理已删除的问卷，可恢复或永久删除
-          </p>
-        </div>
-        <div class="header-right">
-          <a-button
-            type="outline" status="danger" size="large" :disabled="filteredQuestionnaires.length === 0"
-            class="clear-btn" @click="clearAll"
-          >
-            <template #icon>
-              <IconDelete />
-            </template>
-            清空回收站
-          </a-button>
-        </div>
-      </div>
+      <QuestionnairePageHeader
+        ben-type="primary" btn-text="清空回收站" description=" 管理已删除的问卷，可恢复或永久删除" title="回收问卷"
+        is-remove :btn-disabled="filteredQuestionnaires.length === 0" @click="clearAll"
+      >
+        <template #titleIcon>
+          <IconDelete class="title-icon" />
+        </template>
+        <template #btnIcon>
+          <IconDelete />
+        </template>
+      </QuestionnairePageHeader>
 
       <!-- 筛选和搜索区域 -->
       <div class="filter-section">
@@ -185,7 +175,7 @@ onMounted(() => {
                 <IconApps /> 卡片
               </a-radio>
               <a-radio value="table">
-                <IconList />  表格
+                <IconList /> 表格
               </a-radio>
             </a-radio-group>
           </div>
