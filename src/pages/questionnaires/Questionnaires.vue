@@ -1,27 +1,19 @@
 <script setup lang="ts">
 import {
-
-  IconDelete,
-  IconEdit,
-  IconEye,
-  IconHeart,
   IconList,
   IconPlus,
   IconSearch,
-
 } from '@arco-design/web-vue/es/icon'
+
 import Message from '@arco-design/web-vue/es/message'
-import Modal from '@arco-design/web-vue/es/modal'
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 import QuestionnaireCard from '../../components/business/questionnaire-card/QuestionnaireCard.vue'
+import QuestionnaireTable from '../../components/business/questionnaire-table/QuestionnaireTable.vue'
 import usePageState from './hooks/usePageState'
 
-const router = useRouter()
-const viewMode = ref<string>('card')
 const {
   loading,
-
+  viewMode,
   searchKeyword,
   selectedGroup,
   selectedTags,
@@ -31,77 +23,21 @@ const {
   pageSize,
   groups,
   tags,
-  questionnaires,
-  tableColumns,
+
   filteredQuestionnaires,
   paginatedQuestionnaires,
+
+  handleSearch,
+  handleFilter,
+  createQuestionnaire,
+  previewQuestionnaire,
+  editQuestionnaire,
+  toggleStar,
+  moveToTrash,
 } = usePageState()
-
-// 方法
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-CN')
+function duplicateQuestionnaire(questionnaire: any) {
+  Message.success(`已复制问卷：${questionnaire.title}`)
 }
-
-function getStatusColor(status: string) {
-  const colorMap: Record<string, string> = {
-    draft: 'gray',
-    published: 'green',
-    closed: 'red',
-  }
-  return colorMap[status] || 'gray'
-}
-
-function getStatusText(status: string) {
-  const textMap: Record<string, string> = {
-    draft: '草稿',
-    published: '已发布',
-    closed: '已关闭',
-  }
-  return textMap[status] || '未知'
-}
-
-function handleSearch() {
-  currentPage.value = 1
-}
-
-function handleFilter() {
-  currentPage.value = 1
-}
-
-function createQuestionnaire() {
-  router.push('/questionnaires/create')
-}
-
-function previewQuestionnaire(questionnaire: any) {
-  console.warn('预览问卷:', questionnaire)
-  Message.info(`预览问卷：${questionnaire.title}`)
-}
-
-function editQuestionnaire(questionnaire: any) {
-  router.push(`/questionnaires/${questionnaire.id}/edit`)
-}
-
-function toggleStar(questionnaire: any) {
-  questionnaire.is_starred = !questionnaire.is_starred
-  Message.success(questionnaire.is_starred ? '已加入星标' : '已取消星标')
-}
-
-function moveToTrash(questionnaire: any) {
-  Modal.confirm({
-    title: '确认移至回收站？',
-    content: `问卷「${questionnaire.title}」将被移至回收站，可在回收站中恢复。`,
-    onOk: () => {
-      const index = questionnaires.value.findIndex(q => q.id === questionnaire.id)
-      if (index > -1) {
-        questionnaires.value.splice(index, 1)
-        Message.success('已移至回收站')
-      }
-    },
-  })
-}
-const card = 'card'
-const table = 'table'
-
 // 生命周期
 onMounted(() => {
   // 模拟加载数据
@@ -155,10 +91,10 @@ onMounted(() => {
           <div class="view-toggle">
             <!-- //@change="(value:string) => handleViewModechanged(value)" -->
             <a-radio-group v-model="viewMode" size="large">
-              <a-radio :value="card">
+              <a-radio value="card">
                 <IconApps /> 卡片
               </a-radio>
-              <a-radio :value="table">
+              <a-radio value="table">
                 <IconList /> 表格
               </a-radio>
             </a-radio-group>
@@ -270,63 +206,12 @@ onMounted(() => {
 
         <!-- 表格视图 -->
         <div v-else class="table-view">
-          <a-table
-            :columns="tableColumns" :data="paginatedQuestionnaires" :loading="loading" :pagination="false"
-            row-key="id" class="questionnaire-table"
-          >
-            <template #title="{ record }">
-              <div class="table-title" @click="previewQuestionnaire(record)">
-                <span class="title-text">{{ record.title }}</span>
-                <IconHeart v-if="record.is_starred" class="star-icon" :style="{ color: '#ff7a00' }" />
-              </div>
-            </template>
-
-            <template #status="{ record }">
-              <a-tag :color="getStatusColor(record.status)">
-                {{ getStatusText(record.status) }}
-              </a-tag>
-            </template>
-
-            <template #tags="{ record }">
-              <div class="table-tags">
-                <a-tag v-for="tag in (record.tags || []).slice(0, 2)" :key="tag" size="small">
-                  {{ tag }}
-                </a-tag>
-                <span v-if="record.tags && record.tags.length > 2" class="more-tags">
-                  +{{ record.tags.length - 2 }}
-                </span>
-              </div>
-            </template>
-
-            <template #created_at="{ record }">
-              {{ formatDate(record.created_at) }}
-            </template>
-
-            <template #actions="{ record }">
-              <div class="table-actions">
-                <a-button type="text" size="small" :class="{ starred: record.is_starred }" @click="toggleStar(record)">
-                  <template #icon>
-                    <IconHeart :style="{ color: record.is_starred ? '#ff7a00' : '#999' }" />
-                  </template>
-                </a-button>
-                <a-button type="text" size="small" @click="previewQuestionnaire(record)">
-                  <template #icon>
-                    <IconEye />
-                  </template>
-                </a-button>
-                <a-button type="text" size="small" @click="editQuestionnaire(record)">
-                  <template #icon>
-                    <IconEdit />
-                  </template>
-                </a-button>
-                <a-button type="text" size="small" class="danger-btn" @click="moveToTrash(record)">
-                  <template #icon>
-                    <IconDelete />
-                  </template>
-                </a-button>
-              </div>
-            </template>
-          </a-table>
+          <QuestionnaireTable
+            :questionnaires="paginatedQuestionnaires" :loading="loading" @preview="previewQuestionnaire"
+            @edit="editQuestionnaire" @toggle-star="toggleStar"
+            @remove="moveToTrash"
+            @duplicate="duplicateQuestionnaire"
+          />
         </div>
 
         <!-- 分页 -->

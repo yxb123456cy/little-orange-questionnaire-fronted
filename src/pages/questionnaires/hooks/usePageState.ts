@@ -1,6 +1,10 @@
+import Message from '@arco-design/web-vue/es/message'
+import Modal from '@arco-design/web-vue/es/modal'
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default function usePageState() {
+  const router = useRouter()
   // 响应式数据
   const loading = ref(false)
   const viewMode = ref<'card' | 'table'>('card')
@@ -202,6 +206,68 @@ export default function usePageState() {
     const end = start + pageSize.value
     return filteredQuestionnaires.value.slice(start, end)
   })
+  // 方法
+  function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString('zh-CN')
+  }
+
+  function getStatusColor(status: string) {
+    const colorMap: Record<string, string> = {
+      draft: 'gray',
+      published: 'green',
+      closed: 'red',
+    }
+    return colorMap[status] || 'gray'
+  }
+
+  function getStatusText(status: string) {
+    const textMap: Record<string, string> = {
+      draft: '草稿',
+      published: '已发布',
+      closed: '已关闭',
+    }
+    return textMap[status] || '未知'
+  }
+
+  function handleSearch() {
+    currentPage.value = 1
+  }
+
+  function handleFilter() {
+    currentPage.value = 1
+  }
+
+  function createQuestionnaire() {
+    router.push('/questionnaires/create')
+  }
+
+  function previewQuestionnaire(questionnaire: any) {
+    console.warn('预览问卷:', questionnaire)
+    Message.info(`预览问卷：${questionnaire.title}`)
+  }
+
+  function editQuestionnaire(questionnaire: any) {
+    router.push(`/questionnaires/${questionnaire.id}/edit`)
+  }
+
+  function toggleStar(questionnaire: any) {
+    questionnaire.is_starred = !questionnaire.is_starred
+    Message.success(questionnaire.is_starred ? '已加入星标' : '已取消星标')
+  }
+
+  function moveToTrash(questionnaire: any) {
+    Modal.confirm({
+      title: '确认移至回收站？',
+      content: `问卷「${questionnaire.title}」将被移至回收站，可在回收站中恢复。`,
+      onOk: () => {
+        const index = questionnaires.value.findIndex(q => q.id === questionnaire.id)
+        if (index > -1) {
+          questionnaires.value.splice(index, 1)
+          Message.success('已移至回收站')
+        }
+      },
+    })
+  }
 
   // 全部返回
   return {
@@ -221,5 +287,15 @@ export default function usePageState() {
     filteredQuestionnaires,
     paginatedQuestionnaires,
     handleViewModechanged,
+    formatDate,
+    getStatusColor,
+    getStatusText,
+    handleSearch,
+    handleFilter,
+    createQuestionnaire,
+    previewQuestionnaire,
+    editQuestionnaire,
+    toggleStar,
+    moveToTrash,
   }
 }
