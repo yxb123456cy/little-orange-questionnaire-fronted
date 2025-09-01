@@ -90,6 +90,33 @@ const routes: RouteRecordRaw[] = [
           requiresAuth: true,
         },
       },
+      {
+        path: 'renderer-test',
+        name: 'RendererTest',
+        component: () => import('@/pages/design/RenderComponentsTest/index.vue'),
+        meta: {
+          title: '渲染器测试 - 小橘问卷',
+          requiresAuth: true,
+        },
+      },
+      // {
+      //   path: 'questionnaires/create',
+      //   name: 'QuestionnaireCreate',
+      //   component: () => import('@/pages/design/QuestionnaireDesigner.vue'),
+      //   meta: {
+      //     title: '创建问卷 - 小橘问卷',
+      //     requiresAuth: true,
+      //   },
+      // },
+      // {
+      //   path: 'questionnaires/:id/edit',
+      //   name: 'QuestionnaireEdit',
+      //   component: () => import('@/pages/design/QuestionnaireDesigner.vue'),
+      //   meta: {
+      //     title: '编辑问卷 - 小橘问卷',
+      //     requiresAuth: true,
+      //   },
+      // },
     ],
   },
   {
